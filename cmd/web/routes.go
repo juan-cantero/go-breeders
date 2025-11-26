@@ -16,8 +16,28 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
+	//display our test page
+	mux.Get("/test-patterns", app.TestPatterns)
+
+	// factory routes
+	mux.Get("/api/dog-from-factory", app.CreateDogFromFactory)
+	mux.Get("/api/cat-from-factory", app.CreateCatFromFactory)
+	mux.Get("/api/dog-from-abstract-factory", app.CreateDogFromAbstractFactory)
+	mux.Get("/api/cat-from-abstract-factory", app.CreateCatFromAbstractFactory)
+
 	mux.Get("/", app.ShowHome)
 	mux.Get("/{page}", app.ShowPage)
+
+	// Dog domain routes
+	mux.Get("/api/dog-breeds", app.DogHandler.GetAllBreedsJSON)
+	mux.Get("/api/dogs", app.DogHandler.GetAllDogsJSON)
+
+	// Cat domain routes
+	mux.Get("/api/cat-breeds", app.CatHandler.GetAllBreedsJSON)
+	mux.Get("/api/cats", app.CatHandler.GetAllCatsJSON)
+
+	// Breeder domain routes
+	mux.Get("/api/breeders", app.BreederHandler.GetAllBreedersJSON)
 
 	return mux
 }
